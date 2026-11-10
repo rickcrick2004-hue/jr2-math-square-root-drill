@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中2数学 平方根・朝学テスト完全攻略</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background-color: #f0fdfa; /* 優しいミントグリーン背景 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 数式用スタイル（中学生が見やすい教科書風の表現） */
+        .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            letter-spacing: 0.02em;
+        }
+        
+        /* ルート記号の表現 */
+        .radicand {
+            border-top: 2px solid currentColor;
+            padding-top: 1px;
+            padding-left: 2px;
+            padding-right: 3px;
+            margin-left: -1px;
+            display: inline-block;
+            line-height: 1.1;
+        }
+
+        /* 分数の表現 */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            font-size: 0.85em;
+        }
+        .frac-top {
+            border-bottom: 2px solid currentColor;
+            padding: 0 4px;
+            line-height: 1.1;
+        }
+        .frac-bottom {
+            padding: 0 4px;
+            line-height: 1.1;
+        }
+
+        /* アニメーション */
+        @keyframes popIn {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .step-card {
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: #14b8a6; box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
+            50% { border-color: #0d9488; box-shadow: 0 0 0 6px rgba(20, 184, 166, 0); }
+        }
+        .tap-highlight {
+            animation: pulse-border 2s infinite;
+        }
+
+        /* 押しやすいボタンの立体感 */
+        .btn-3d {
+            transition: all 0.1s;
+            box-shadow: 0 4px 0 #0f766e;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #0f766e;
+        }
+
+        .btn-3d-amber {
+            transition: all 0.1s;
+            box-shadow: 0 4px 0 #b45309;
+        }
+        .btn-3d-amber:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #b45309;
+        }
+
+        .btn-3d-gray {
+            transition: all 0.1s;
+            box-shadow: 0 4px 0 #cbd5e1;
+        }
+        .btn-3d-gray:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #cbd5e1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- ヘッダーエリア -->
+    <header class="bg-teal-600 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-square-root-variable text-2xl text-amber-300"></i>
+                <h1 class="text-lg md:text-xl font-extrabold tracking-wider">朝学テスト対策：平方根</h1>
+            </div>
+            
+            <!-- スコア・連続正解バッジ -->
+            <div class="flex items-center space-x-3 bg-teal-700 px-3 py-1.5 rounded-full text-sm font-bold border border-teal-500">
+                <div class="flex items-center text-amber-300">
+                    <i class="fa-solid fa-fire mr-1"></i>
+                    <span>連続正解: <span id="streak-count" class="text-lg">0</span></span>
+                </div>
+                <div class="text-teal-200">|</div>
+                <div>
+                    <span>クリア: <span id="total-cleared">0</span>問</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 大問選択タブ -->
+        <div class="max-w-3xl mx-auto px-2 pt-1 flex space-x-1 overflow-x-auto bg-teal-700/50">
+            <button onclick="selectCategory(1)" id="tab-1" class="category-tab flex-1 py-2 px-3 text-xs md:text-sm font-bold rounded-t-lg bg-white text-teal-800 shadow-sm whitespace-nowrap transition">
+                [1] 平方根を求める
+            </button>
+            <button onclick="selectCategory(2)" id="tab-2" class="category-tab flex-1 py-2 px-3 text-xs md:text-sm font-bold rounded-t-lg bg-teal-800/60 text-teal-100 hover:bg-teal-800 whitespace-nowrap transition">
+                [2] 根号を使わずに表す
+            </button>
+            <button onclick="selectCategory(3)" id="tab-3" class="category-tab flex-1 py-2 px-3 text-xs md:text-sm font-bold rounded-t-lg bg-teal-800/60 text-teal-100 hover:bg-teal-800 whitespace-nowrap transition">
+                [3] (√ )² の値を求める
+            </button>
+            <button onclick="selectCategory(4)" id="tab-4" class="category-tab flex-1 py-2 px-3 text-xs md:text-sm font-bold rounded-t-lg bg-teal-800/60 text-teal-100 hover:bg-teal-800 whitespace-nowrap transition">
+                [4] 大小を不等号で表す
+            </button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 py-5 flex flex-col gap-4">
+
+        <!-- モード切替 & 問題選択バー -->
+        <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-100 flex flex-wrap justify-between items-center gap-3">
+            <!-- 学習モード切替 -->
+            <div class="flex bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
+                <button onclick="setMode('guide')" id="mode-guide" class="flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-1.5 bg-amber-400 text-slate-900 shadow-sm">
+                    <i class="fa-regular fa-lightbulb"></i>
+                    <span>ステップ解説</span>
+                </button>
+                <button onclick="setMode('drill')" id="mode-drill" class="flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-pencil"></i>
+                    <span>自力で練習</span>
+                </button>
+            </div>
+
+            <!-- 小問番号 & ランダム生成ボタン -->
+            <div class="flex items-center space-x-1.5 w-full sm:w-auto justify-end" id="subproblem-buttons">
+                <!-- JSで動的に生成されます: (1) (2) (3) [ランダム類題] -->
+            </div>
+        </div>
+
+        <!-- 問題表示カード -->
+        <div class="bg-white rounded-2xl shadow-md border-2 border-teal-500 overflow-hidden relative">
+            <!-- 問題文ヘッダー -->
+            <div class="bg-teal-50 px-4 py-2.5 border-b border-teal-100 flex justify-between items-center">
+                <span id="problem-instruction" class="font-bold text-teal-900 text-sm md:text-base">
+                    次の数の平方根を求めなさい。
+                </span>
+                <span id="problem-badge" class="bg-teal-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                    プリント (1)
+                </span>
+            </div>
+
+            <!-- 数式メイン表示エリア -->
+            <div class="p-6 md:p-8 text-center flex flex-col items-center justify-center min-h-[130px] bg-gradient-to-b from-white to-slate-50/50">
+                <div id="problem-question" class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-wide">
+                    <!-- 問題の数式が入ります -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             1. ステップ解説モード（タップで思考を進める）エリア
+             ========================================== -->
+        <div id="guide-container" class="flex flex-col gap-3">
+            
+            <!-- 思考のステップがここに追加されていきます -->
+            <div id="steps-list" class="flex flex-col gap-3"></div>
+
+            <!-- タップして次へ進むボタン -->
+            <div id="next-step-area" class="mt-2 flex flex-col items-center">
+                <button onclick="advanceStep()" id="btn-next-step" class="w-full md:w-4/5 py-4 px-6 bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-lg rounded-2xl btn-3d tap-highlight flex items-center justify-center space-x-3">
+                    <i class="fa-solid fa-hand-pointer text-xl animate-bounce"></i>
+                    <span id="next-step-btn-text">タップして考え方を進める (1/3)</span>
+                </button>
+            </div>
+
+            <!-- ステップ完了後のアクションボタン（最初は非表示） -->
+            <div id="guide-complete-actions" class="hidden mt-3 p-4 bg-amber-50 rounded-2xl border-2 border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-3 step-card">
+                <div class="flex items-center space-x-3 text-amber-900">
+                    <i class="fa-solid fa-circle-check text-3xl text-amber-500"></i>
+                    <div>
+                        <div class="font-extrabold text-base">考え方をマスター！</div>
+                        <div class="text-xs text-amber-700">同じパターンの問題を自力で解いてみよう！</div>
+                    </div>
+                </div>
+                <div class="flex space-x-2 w-full sm:w-auto">
+                    <button onclick="tryRandomInDrill()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold text-sm rounded-xl btn-3d-amber flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>自力で類題に挑戦！</span>
+                    </button>
+                    <button onclick="nextProblemInGuide()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold text-sm rounded-xl btn-3d flex items-center justify-center gap-1.5">
+                        <span>次の問題へ</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             2. 自力で練習モード（4択＆即座に思考確認）エリア
+             ========================================== -->
+        <div id="drill-container" class="hidden flex-col gap-4">
+            <div class="text-center text-sm font-bold text-slate-500 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-comment-dots text-teal-500"></i>
+                <span>頭の中でステップを思い出して、正しい答えを選ぼう！</span>
+            </div>
+
+            <!-- 選択肢グリッド -->
+            <div id="choices-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- JSで選択肢ボタンを生成 -->
+            </div>
+
+            <!-- 途中で考え方が分からなくなった時のレスキューボタン -->
+            <div class="text-center mt-1">
+                <button onclick="switchToGuideForCurrent()" class="text-xs md:text-sm font-bold text-teal-700 hover:text-teal-900 underline py-2 px-4 rounded-lg">
+                    <i class="fa-regular fa-circle-question mr-1"></i>考え方が分からないときは「ステップ解説」を見る
+                </button>
+            </div>
+
+            <!-- 解答後のフィードバック表示エリア -->
+            <div id="drill-feedback" class="hidden rounded-2xl p-5 border-2 step-card">
+                <!-- 正解・不正解のメッセージと「思考の振り返り」が入ります -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- フッター：重要ポイント早見表（いつでも確認できるカンニングペーパー） -->
+    <footer class="bg-slate-800 text-slate-200 py-4 px-4 mt-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-xs font-bold text-amber-300 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-star"></i>
+                <span>テスト直前！絶対におさえる3つのルール</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                <div class="bg-slate-700/70 p-2.5 rounded-xl border border-slate-600">
+                    <span class="text-amber-300 font-bold">①「平方根を求めよ」</span><br>
+                    と言われたら、絶対に <span class="text-white font-bold underline">± (プラスマイナス)</span> をつける！
+                </div>
+                <div class="bg-slate-700/70 p-2.5 rounded-xl border border-slate-600">
+                    <span class="text-teal-300 font-bold">② 根号(√ )を外すとき</span><br>
+                    「平方根」と聞かれていないなら <span class="text-white font-bold underline">± はつけない</span>！前の符号に注意！
+                </div>
+                <div class="bg-slate-700/70 p-2.5 rounded-xl border border-slate-600">
+                    <span class="text-pink-300 font-bold">③ 大小を比べるとき</span><br>
+                    整数は <span class="text-white font-bold underline">2乗して √ の中に入れて</span> 比べる！マイナスは逆転！
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- アプリケーションロジック -->
+    <script>
+        // ==========================================
+        // 数式レンダリング用ヘルパー関数
+        // ==========================================
+        function mSqrt(inner) {
+            return `<span class="math">&radic;<span class="radicand">${inner}</span></span>`;
+        }
+        function mFrac(top, bottom) {
+            return `<span class="math"><span class="frac"><span class="frac-top">${top}</span><span class="frac-bottom">${bottom}</span></span></span>`;
+        }
+        function mMath(content) {
+            return `<span class="math">${content}</span>`;
+        }
+
+        // ==========================================
+        // データベース：朝学テスト大問1〜4の完全再現データ
+        // ==========================================
+        const testCategories = {
+            1: {
+                title: "[1] 次の数の平方根を求めなさい。必要ならば、根号 √ を使って答えなさい。",
+                problems: [
+                    {
+                        id: "1-1",
+                        label: "プリント(1)",
+                        questionHtml: `${mMath("4")} の平方根`,
+                        steps: [
+                            {
+                                title: "ステップ1：平方根ってなに？",
+                                text: `「2乗して（同じ数を2回かけて） <strong class="text-teal-700 text-lg">${mMath("4")}</strong> になる数」を探そう！`,
+                                highlight: `九九を思い出すと… <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mMath("2 &times; 2 = 4")}</span> だね！`
+                            },
+                            {
+                                title: "ステップ2：マイナスも忘れずに！",
+                                text: `ちょっと待って！マイナス同士をかけてもプラスになるよね？`,
+                                highlight: `<span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mMath("(-2) &times; (-2) = 4")}</span> だから、<strong class="text-rose-600">${mMath("-2")}</strong> も正解なんだ！`
+                            },
+                            {
+                                title: "ステップ3：合わせて答えよう！",
+                                text: `「平方根を求めなさい」と言われたら、プラスとマイナスの両方があるから <strong class="text-rose-600">±（プラスマイナス）</strong> を使ってまとめるよ！`,
+                                answerHtml: mMath("&plusmn;2"),
+                                point: "「〜の平方根は？」と聞かれたら、絶対に ± をつけよう！"
+                            }
+                        ],
+                        correctChoice: mMath("&plusmn;2"),
+                        choices: [mMath("&plusmn;2"), mMath("2"), mMath(`&plusmn;${mSqrt("4")}`), mMath("&plusmn;16")]
+                    },
+                    {
+                        id: "1-2",
+                        label: "プリント(2)",
+                        questionHtml: `${mMath("13")} の平方根`,
+                        steps: [
+                            {
+                                title: "ステップ1：2乗して13になる整数はある？",
+                                text: `2乗して <strong class="text-teal-700">${mMath("13")}</strong> になる整数を探してみよう。`,
+                                highlight: `${mMath("3 &times; 3 = 9")} 、 ${mMath("4 &times; 4 = 16")} … あれ？ちょうど ${mMath("13")} になる整数はないぞ！`
+                            },
+                            {
+                                title: "ステップ2：整数がないときは √（ルート）の出番！",
+                                text: `ぴったり2乗になる整数がないときは、そのまま <strong class="text-teal-700">根号（&radic;）</strong> をかぶせるだけでOK！`,
+                                highlight: `つまり <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt("13")}</span> になるよ。`
+                            },
+                            {
+                                title: "ステップ3：平方根だから ± をつける！",
+                                text: `最後に「平方根を求めなさい」だから、<strong class="text-rose-600">±</strong> を絶対につけよう！<br><span class="text-xs text-slate-500">※ √ の中は13のまま！2乗したりしないでね。</span>`,
+                                answerHtml: mMath(`&plusmn;${mSqrt("13")}`),
+                                point: "整数で綺麗に表せない数は、±√ をかぶせるだけでクリア！"
+                            }
+                        ],
+                        correctChoice: mMath(`&plusmn;${mSqrt("13")}`),
+                        choices: [mMath(`&plusmn;${mSqrt("13")}`), mMath(`${mSqrt("13")}`), mMath("&plusmn;13"), mMath("&plusmn;169")]
+                    },
+                    {
+                        id: "1-3",
+                        label: "プリント(3)",
+                        questionHtml: `${mFrac("1", "16")} の平方根`,
+                        steps: [
+                            {
+                                title: "ステップ1：分数は「上」と「下」を別々に考える！",
+                                text: `分数が出てきても焦らないで大丈夫！分子（上）と分母（下）を別々に探そう。`,
+                                highlight: `上：2乗して ${mMath("1")} になる数は <strong class="text-teal-700">${mMath("1")}</strong><br>下：2乗して ${mMath("16")} になる数は <strong class="text-teal-700">${mMath("4")}</strong> （${mMath("4 &times; 4 = 16")}）`
+                            },
+                            {
+                                title: "ステップ2：分数に組み立てよう！",
+                                text: `見つけた数字を上下に並べると、<span class="bg-amber-100 px-2 py-1 rounded font-bold">${mFrac("1", "4")}</span> になるね。`,
+                                highlight: `綺麗に整数（分数）に直せたから、もう √（ルート）は使わないよ！`
+                            },
+                            {
+                                title: "ステップ3：平方根だから ± をつける！",
+                                text: `「平方根を求めなさい」だから、最後に <strong class="text-rose-600">±</strong> をつけて完成！`,
+                                answerHtml: mMath(`&plusmn;${mFrac("1", "4")}`),
+                                point: "分数の平方根は、上と下をそれぞれ何の2乗か考えよう！"
+                            }
+                        ],
+                        correctChoice: mMath(`&plusmn;${mFrac("1", "4")}`),
+                        choices: [mMath(`&plusmn;${mFrac("1", "4")}`), mMath(`${mFrac("1", "4")}`), mMath(`&plusmn;${mSqrt(mFrac("1", "4"))}`), mMath(`&plusmn;${mFrac("1", "8")}`)]
+                    }
+                ]
+            },
+            2: {
+                title: "[2] 次の数を、根号を使わないで表しなさい。",
+                problems: [
+                    {
+                        id: "2-1",
+                        label: "プリント(1)",
+                        questionHtml: mSqrt("9"),
+                        steps: [
+                            {
+                                title: "ステップ1：大問1との違いに注意！",
+                                text: `今回は「平方根を求めよ」ではなく、「<strong class="text-teal-700">${mSqrt("9")} を根号を使わないで表せ</strong>」という問題だよ。`,
+                                highlight: `<strong class="text-rose-600">勝手に ± をつけてはいけない</strong>から気をつけよう！`
+                            },
+                            {
+                                title: "ステップ2：√ の中身は何の2乗？",
+                                text: `√ の中の <strong class="text-teal-700">${mMath("9")}</strong> は、何の2乗かな？`,
+                                highlight: `${mMath("3 &times; 3 = 9")} だから、<span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt("3<sup>2</sup>")}</span> と同じだね！`
+                            },
+                            {
+                                title: "ステップ3：2乗と √ がセットで消える！",
+                                text: `√ の中で2乗が作れたら、根号（√）をそのまま外すことができるよ！前にマイナスもないからプラスのまま答えよう。`,
+                                answerHtml: mMath("3"),
+                                point: "√9 は「9の平方根のうちプラスの方」という意味！だから答えは 3 だけ！"
+                            }
+                        ],
+                        correctChoice: mMath("3"),
+                        choices: [mMath("3"), mMath("&plusmn;3"), mMath("9"), mMath("81")]
+                    },
+                    {
+                        id: "2-2",
+                        label: "プリント(2)",
+                        questionHtml: mSqrt("(-2)<sup>2</sup>"),
+                        steps: [
+                            {
+                                title: "ステップ1：まずは √ の中身を計算しよう！",
+                                text: `そのまま2乗と√を消すと、符号のミスをしやすいよ！まずは √ の中にある <strong class="text-teal-700">${mMath("(-2)<sup>2</sup>")}</strong> を計算しよう。`,
+                                highlight: `${mMath("(-2) &times; (-2) = +4")} だから、式は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt("4")}</span> になるね！`
+                            },
+                            {
+                                title: "ステップ2：√4 の根号を外そう！",
+                                text: `${mSqrt("4")} は、（1）と同じ考え方だね！2乗して4になるプラスの数は？`,
+                                highlight: `${mMath("2 &times; 2 = 4")} だから、<strong class="text-teal-700">${mMath("2")}</strong> だね！`
+                            },
+                            {
+                                title: "ステップ3：符号を確認して完成！",
+                                text: `√ の中にあったマイナスは2乗してプラスになったから、答えはプラスの <strong class="text-rose-600">${mMath("2")}</strong> になるよ！`,
+                                answerHtml: mMath("2"),
+                                point: "引っかけ注意！ √(-2)² を -2 にしないように、まず中身を計算して √4 にしよう！"
+                            }
+                        ],
+                        correctChoice: mMath("2"),
+                        choices: [mMath("2"), mMath("-2"), mMath("&plusmn;2"), mMath("4")]
+                    },
+                    {
+                        id: "2-3",
+                        label: "プリント(3)",
+                        questionHtml: mMath(`-${mSqrt("(-3)<sup>2</sup>")}`),
+                        steps: [
+                            {
+                                title: "ステップ1：外のマイナスは一旦おいて、√の中身を計算！",
+                                text: `一番前にあるマイナスは最後にくっつけるよ。まずは √ の中の <strong class="text-teal-700">${mMath("(-3)<sup>2</sup>")}</strong> を計算しよう！`,
+                                highlight: `${mMath("(-3) &times; (-3) = 9")} だから、式は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mMath(`-${mSqrt("9")}`)}</span> になるね。`
+                            },
+                            {
+                                title: "ステップ2：√9 の部分を整数にしよう！",
+                                text: `${mSqrt("9")} の部分は、根号を外すと <strong class="text-teal-700">${mMath("3")}</strong> になるね。`,
+                                highlight: `中身のマイナスは2乗で消えたよ！`
+                            },
+                            {
+                                title: "ステップ3：最初に待っていた「外のマイナス」を合体！",
+                                text: `最後に、√ の一番前にあった「<strong class="text-rose-600">−</strong>」をくっつけて答えは <strong class="text-rose-600">${mMath("-3")}</strong> ！`,
+                                answerHtml: mMath("-3"),
+                                point: "「√の中のマイナス」は2乗で消えるけど、「√の外のマイナス」は最後まで残るよ！"
+                            }
+                        ],
+                        correctChoice: mMath("-3"),
+                        choices: [mMath("-3"), mMath("3"), mMath("&plusmn;3"), mMath("-9")]
+                    }
+                ]
+            },
+            3: {
+                title: "[3] 次の値を求めなさい。",
+                problems: [
+                    {
+                        id: "3-1",
+                        label: "プリント(1)",
+                        questionHtml: mMath(`(${mSqrt("6")})<sup>2</sup>`),
+                        steps: [
+                            {
+                                title: "ステップ1：平方根（√）を2乗するとどうなる？",
+                                text: `${mSqrt("6")} はもともと「<strong class="text-teal-700">2乗すると 6 になる数</strong>」のことだったね！`,
+                                highlight: `それを実際に2乗（${mMath("<sup>2</sup>")}）しているから、当然ルートが外れて中身がそのまま出てくるよ！`
+                            },
+                            {
+                                title: "ステップ2：そのまま中身を取り出して完成！",
+                                text: `間違えて ${mMath("6 &times; 6 = 36")} にしないように気をつけよう！<br>√ と ² がセットでパッと消えるイメージだよ。`,
+                                answerHtml: mMath("6"),
+                                point: "(√a)² ＝ a ！2乗したらルートがポロッと外れるだけ！"
+                            }
+                        ],
+                        correctChoice: mMath("6"),
+                        choices: [mMath("6"), mMath("36"), mMath("&plusmn;6"), mSqrt("36")]
+                    },
+                    {
+                        id: "3-2",
+                        label: "プリント(2)",
+                        questionHtml: mMath(`-( -${mSqrt("7")} )<sup>2</sup>`),
+                        steps: [
+                            {
+                                title: "ステップ1：まずはカッコの2乗 ( -√7 )² だけを計算！",
+                                text: `マイナスが2つあってややこしいね！<br>まずは一番前のマイナスを隠して、カッコの2乗 <strong class="text-teal-700">${mMath(`( -${mSqrt("7")} )<sup>2</sup>`)}</strong> だけを計算しよう。`,
+                                highlight: `カッコの中のマイナスは2乗すると<strong class="text-teal-700">プラス</strong>になり、√ も外れるから <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mMath("7")}</span> になるね！`
+                            },
+                            {
+                                title: "ステップ2：隠していた「一番前のマイナス」をくっつける！",
+                                text: `カッコの外（一番左）にあったマイナスは、2乗されていないからそのまま残っているよ！<br>さっきの ${mMath("7")} にマイナスをくっつけよう。`,
+                                answerHtml: mMath("-7"),
+                                point: "「マイナス × マイナスでプラス！」と早とちりしないように、カッコの2乗を先に計算しよう！"
+                            }
+                        ],
+                        correctChoice: mMath("-7"),
+                        choices: [mMath("-7"), mMath("7"), mMath("-49"), mMath("49")]
+                    }
+                ]
+            },
+            4: {
+                title: "[4] 次の2つの数または3つの数の大小を、不等号を使って表しなさい。",
+                problems: [
+                    {
+                        id: "4-1",
+                        label: "プリント(1)",
+                        questionHtml: `${mSqrt("15")} , ${mSqrt("18")}`,
+                        steps: [
+                            {
+                                title: "ステップ1：どちらもプラスの √ だね！",
+                                text: `両方とも根号（√）がついているプラスの数だね。この場合はとっても簡単！`,
+                                highlight: `√ の中の数字 <strong class="text-teal-700">${mMath("15")}</strong> と <strong class="text-teal-700">${mMath("18")}</strong> をそのまま比べよう。`
+                            },
+                            {
+                                title: "ステップ2：不等号（＜）の向きに気をつけて答えよう！",
+                                text: `${mMath("15")} より ${mMath("18")} の方が大きいから、${mSqrt("18")} の方に口が開くように不等号を書こう！`,
+                                answerHtml: mMath(`${mSqrt("15")} &lt; ${mSqrt("18")}`),
+                                point: "プラスの √ 同士なら、中身が大きい方がそのまま大きい！"
+                            }
+                        ],
+                        correctChoice: mMath(`${mSqrt("15")} &lt; ${mSqrt("18")}`),
+                        choices: [
+                            mMath(`${mSqrt("15")} &lt; ${mSqrt("18")}`),
+                            mMath(`${mSqrt("15")} &gt; ${mSqrt("18")}`)
+                        ]
+                    },
+                    {
+                        id: "4-2",
+                        label: "プリント(2)",
+                        questionHtml: `${mMath("4")} , ${mSqrt("10")}`,
+                        steps: [
+                            {
+                                title: "ステップ1：整数と √ はそのままじゃ比べられない！",
+                                text: `片方が整数の <strong class="text-teal-700">${mMath("4")}</strong> で、もう片方が <strong class="text-teal-700">${mSqrt("10")}</strong> だね。<br>そのまま「4と10」を比べるのは絶対ダメ！`,
+                                highlight: `整数の <strong class="text-teal-700">${mMath("4")}</strong> を、<strong class="text-rose-600">2乗して √ の形に変身</strong>させよう！`
+                            },
+                            {
+                                title: "ステップ2：4 を √ の中に入れると？",
+                                text: `${mMath("4")} を2乗すると ${mMath("4 &times; 4 = 16")} だね。`,
+                                highlight: `つまり、${mMath("4")} は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt("16")}</span> に変身するよ！`
+                            },
+                            {
+                                title: "ステップ3：中身を比べて、元の数字で答えよう！",
+                                text: `変身した <strong class="text-teal-700">${mSqrt("16")}</strong> と <strong class="text-teal-700">${mSqrt("10")}</strong> を比べると、${mSqrt("16")}（つまり ${mMath("4")}）の方が大きいね！<br><span class="text-xs text-rose-600 font-bold">※答えを書くときは、勝手に変身させた √16 ではなく、問題の「4」に戻して書こう！</span>`,
+                                answerHtml: mMath(`4 &gt; ${mSqrt("10")} <span class="text-sm font-normal text-slate-600 ml-2">（または ${mSqrt("10")} &lt; 4）</span>`),
+                                point: "整数は「2乗してルートをかぶせる」！答える時は元の整数の形で書こう！"
+                            }
+                        ],
+                        correctChoice: mMath(`4 &gt; ${mSqrt("10")} （または ${mSqrt("10")} &lt; 4）`),
+                        choices: [
+                            mMath(`4 &gt; ${mSqrt("10")} （または ${mSqrt("10")} &lt; 4）`),
+                            mMath(`4 &lt; ${mSqrt("10")} （または ${mSqrt("10")} &gt; 4）`),
+                            mMath(`${mSqrt("16")} &gt; ${mSqrt("10")} （元の数に戻し忘れ）`)
+                        ]
+                    },
+                    {
+                        id: "4-3",
+                        label: "プリント(3)",
+                        questionHtml: `${mMath(`-${mSqrt("6")}`)} , ${mMath(`-${mSqrt("7")}`)}`,
+                        steps: [
+                            {
+                                title: "ステップ1：両方ともマイナスがついていることに注目！",
+                                text: `まずはマイナスを除いた <strong class="text-teal-700">${mSqrt("6")}</strong> と <strong class="text-teal-700">${mSqrt("7")}</strong> で比べると、${mSqrt("7")} の方が数字は大きいね。`,
+                                highlight: `でも今回は両方とも <strong class="text-rose-600">マイナス（−）</strong> がついているよ！`
+                            },
+                            {
+                                title: "ステップ2：マイナスの世界では大小が逆転する！",
+                                text: `温度計を思い出そう。「−6℃」と「−7℃」なら、どっちが高い（大きい）かな？`,
+                                highlight: `マイナスの数では、<strong class="text-rose-600">数字が小さい方が、実際の値は大きくなる</strong>んだ！`
+                            },
+                            {
+                                title: "ステップ3：不等号の向きを逆転させて完成！",
+                                text: `だから ${mMath(`-${mSqrt("6")}`)} の方が大きいよ！口が開く向きに気をつけよう。`,
+                                answerHtml: mMath(`-${mSqrt("6")} &gt; -${mSqrt("7")} <span class="text-sm font-normal text-slate-600 ml-2">（または -${mSqrt("7")} &lt; -${mSqrt("6")}）</span>`),
+                                point: "マイナス同士の大小比較は、プラスの時と向きが完全に逆になる！"
+                            }
+                        ],
+                        correctChoice: mMath(`-${mSqrt("6")} &gt; -${mSqrt("7")} （または -${mSqrt("7")} &lt; -${mSqrt("6")}）`),
+                        choices: [
+                            mMath(`-${mSqrt("6")} &gt; -${mSqrt("7")} （または -${mSqrt("7")} &lt; -${mSqrt("6")}）`),
+                            mMath(`-${mSqrt("6")} &lt; -${mSqrt("7")} （または -${mSqrt("7")} &gt; -${mSqrt("6")}）`)
+                        ]
+                    },
+                    {
+                        id: "4-4",
+                        label: "プリント(4)",
+                        questionHtml: `${mSqrt("15")} , ${mSqrt("13")} , ${mMath("4")}`,
+                        steps: [
+                            {
+                                title: "ステップ1：3つあってもやることは同じ！整数を √ に変身！",
+                                text: `3つの中に1つだけ整数の <strong class="text-teal-700">${mMath("4")}</strong> が混ざっているね。<br>これを2乗して √ の中に入れよう！`,
+                                highlight: `${mMath("4 &times; 4 = 16")} だから、${mMath("4")} は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt("16")}</span> に変身！`
+                            },
+                            {
+                                title: "ステップ2：3つの √ の中身を小さい順に並べよう！",
+                                text: `これで3つの数は <strong class="text-teal-700">${mSqrt("15")} , ${mSqrt("13")} , ${mSqrt("16")}</strong> になったね。<br>小さい順に並べ替えてみよう！`,
+                                highlight: `小さい順にすると… <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt("13")} &lt; ${mSqrt("15")} &lt; ${mSqrt("16")}</span> だね！`
+                            },
+                            {
+                                title: "ステップ3：変身させた √16 を元の「4」に戻して完成！",
+                                text: `最後に、${mSqrt("16")} を元の <strong class="text-rose-600">${mMath("4")}</strong> に書き直して答えよう！<br>3つの数を比べるときは、必ず小さい順（または大きい順）に一列に並べてね。`,
+                                answerHtml: mMath(`${mSqrt("13")} &lt; ${mSqrt("15")} &lt; 4`),
+                                point: "3つの数の比較は、必ず順番に並べ替えてから不等号を同じ向きに揃えよう！"
+                            }
+                        ],
+                        correctChoice: mMath(`${mSqrt("13")} &lt; ${mSqrt("15")} &lt; 4`),
+                        choices: [
+                            mMath(`${mSqrt("13")} &lt; ${mSqrt("15")} &lt; 4`),
+                            mMath(`4 &lt; ${mSqrt("13")} &lt; ${mSqrt("15")}`),
+                            mMath(`${mSqrt("15")} &gt; ${mSqrt("13")} &lt; 4 （並び替え忘れ）`),
+                            mMath(`${mSqrt("13")} &lt; ${mSqrt("15")} &lt; ${mSqrt("16")} （元の数に戻し忘れ）`)
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // ==========================================
+        // ランダム類題ジェネレーター（無限練習用）
+        // ==========================================
+        function generateRandomProblem(catId) {
+            const nonSquares = [2, 3, 5, 6, 7, 10, 11, 13, 14, 15, 17, 19, 21, 23];
+            
+            if (catId === 1) {
+                // 大問1のランダム生成：(1)整数の平方数、(2)非平方数、(3)分数 のいずれか
+                const type = Math.floor(Math.random() * 3) + 1;
+                if (type === 1) {
+                    const bases = [2, 3, 5, 6, 7, 8, 9, 10, 11, 12];
+                    const b = bases[Math.floor(Math.random() * bases.length)];
+                    const sq = b * b;
+                    return {
+                        id: "1-rand",
+                        label: "ランダム類題",
+                        questionHtml: `${mMath(sq)} の平方根`,
+                        steps: [
+                            {
+                                title: "ステップ1：2乗して " + sq + " になる数を探そう！",
+                                text: `同じ数を2回かけて <strong class="text-teal-700">${mMath(sq)}</strong> になる整数は何かな？`,
+                                highlight: `${mMath(`${b} &times; ${b} = ${sq}`)} だから、<strong class="text-teal-700">${mMath(b)}</strong> だね！`
+                            },
+                            {
+                                title: "ステップ2：平方根は絶対に ± をつける！",
+                                text: `マイナス同士をかけてもプラスになるから、<strong class="text-rose-600">±（プラスマイナス）</strong> をつけて答えよう！`,
+                                answerHtml: mMath(`&plusmn;${b}`),
+                                point: "「平方根を求めよ」＝ 必ず ± をつける！"
+                            }
+                        ],
+                        correctChoice: mMath(`&plusmn;${b}`),
+                        choices: shuffleArray([mMath(`&plusmn;${b}`), mMath(`${b}`), mMath(`&plusmn;${mSqrt(sq)}`), mMath(`-${b}`)])
+                    };
+                } else if (type === 2) {
+                    const n = nonSquares[Math.floor(Math.random() * nonSquares.length)];
+                    return {
+                        id: "1-rand",
+                        label: "ランダム類題",
+                        questionHtml: `${mMath(n)} の平方根`,
+                        steps: [
+                            {
+                                title: "ステップ1：2乗して " + n + " になる整数はある？",
+                                text: `2乗してぴったり <strong class="text-teal-700">${mMath(n)}</strong> になる整数はないよね。`,
+                                highlight: `そんなときは、そのまま <strong class="text-teal-700">&radic;（ルート）</strong> をかぶせよう！`
+                            },
+                            {
+                                title: "ステップ2：平方根だから ± をつける！",
+                                text: `「平方根を求めよ」だから、前に <strong class="text-rose-600">±</strong> をつけて完成！`,
+                                answerHtml: mMath(`&plusmn;${mSqrt(n)}`),
+                                point: "整数にならないときは ±√ をかぶせるだけ！"
+                            }
+                        ],
+                        correctChoice: mMath(`&plusmn;${mSqrt(n)}`),
+                        choices: shuffleArray([mMath(`&plusmn;${mSqrt(n)}`), mMath(`${mSqrt(n)}`), mMath(`&plusmn;${n}`), mMath(`&plusmn;${n * n}`)])
+                    };
+                } else {
+                    const denoms = [3, 4, 5, 6, 7, 8, 9, 10];
+                    const d = denoms[Math.floor(Math.random() * denoms.length)];
+                    const numers = [1, 2, 3, 5];
+                    let n = numers[Math.floor(Math.random() * numers.length)];
+                    if (n >= d || d % n === 0 && n !== 1) n = 1;
+                    const nSq = n * n;
+                    const dSq = d * d;
+                    return {
+                        id: "1-rand",
+                        label: "ランダム類題",
+                        questionHtml: `${mFrac(nSq, dSq)} の平方根`,
+                        steps: [
+                            {
+                                title: "ステップ1：分数の上と下を別々に考えよう！",
+                                text: `上（分子）の ${mMath(nSq)} は <strong class="text-teal-700">${mMath(n)}</strong> の2乗、<br>下（分母）の ${mMath(dSq)} は <strong class="text-teal-700">${mMath(d)}</strong> の2乗だね！`,
+                                highlight: `合わせると <span class="bg-amber-100 px-2 py-1 rounded font-bold">${mFrac(n, d)}</span> になるよ。`
+                            },
+                            {
+                                title: "ステップ2：平方根だから ± をつける！",
+                                text: `「平方根を求めよ」だから、<strong class="text-rose-600">±</strong> をつけて完成！`,
+                                answerHtml: mMath(`&plusmn;${mFrac(n, d)}`),
+                                point: "分数の平方根も、上と下をそれぞれルートから出して ± をつけよう！"
+                            }
+                        ],
+                        correctChoice: mMath(`&plusmn;${mFrac(n, d)}`),
+                        choices: shuffleArray([
+                            mMath(`&plusmn;${mFrac(n, d)}`),
+                            mMath(`${mFrac(n, d)}`),
+                            mMath(`&plusmn;${mSqrt(mFrac(n, d))}`),
+                            mMath(`&plusmn;${mFrac(nSq, d)}`)
+                        ])
+                    };
+                }
+            } else if (catId === 2) {
+                // 大問2のランダム生成
+                const type = Math.floor(Math.random() * 3) + 1;
+                const bases = [2, 3, 4, 5, 6, 7, 8, 9];
+                const b = bases[Math.floor(Math.random() * bases.length)];
+                const sq = b * b;
+
+                if (type === 1) {
+                    return {
+                        id: "2-rand",
+                        label: "ランダム類題",
+                        questionHtml: mSqrt(sq),
+                        steps: [
+                            {
+                                title: "ステップ1：√ の中身は何の2乗？",
+                                text: `${mMath(sq)} は <strong class="text-teal-700">${mMath(`${b} &times; ${b}`)}</strong> だね！`,
+                                highlight: `「平方根を求めよ」ではないから、<strong class="text-rose-600">± はつけない</strong>よ！`
+                            },
+                            {
+                                title: "ステップ2：根号を外して答えよう！",
+                                text: `前にマイナスもついていないから、そのままプラスの整数で答えよう。`,
+                                answerHtml: mMath(b),
+                                point: "ただの √ の計算では、勝手に ± をつけない！"
+                            }
+                        ],
+                        correctChoice: mMath(b),
+                        choices: shuffleArray([mMath(b), mMath(`&plusmn;${b}`), mMath(`-${b}`), mMath(sq)])
+                    };
+                } else if (type === 2) {
+                    return {
+                        id: "2-rand",
+                        label: "ランダム類題",
+                        questionHtml: mSqrt(`(-${b})<sup>2</sup>`),
+                        steps: [
+                            {
+                                title: "ステップ1：まず √ の中身を計算しよう！",
+                                text: `${mMath(`(-${b})<sup>2</sup> = (-${b}) &times; (-${b}) = +${sq}`)} だね！`,
+                                highlight: `つまり、この式は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt(sq)}</span> とまったく同じなんだ！`
+                            },
+                            {
+                                title: "ステップ2：根号を外して完成！",
+                                text: `中身のマイナスは2乗でプラスに変わったから、答えはプラスの <strong class="text-rose-600">${mMath(b)}</strong> になるよ！`,
+                                answerHtml: mMath(b),
+                                point: "√ の中のマイナスは、2乗するとプラスになって消える！"
+                            }
+                        ],
+                        correctChoice: mMath(b),
+                        choices: shuffleArray([mMath(b), mMath(`-${b}`), mMath(`&plusmn;${b}`), mMath(sq)])
+                    };
+                } else {
+                    return {
+                        id: "2-rand",
+                        label: "ランダム類題",
+                        questionHtml: mMath(`-${mSqrt(`(-${b})<sup>2</sup>`)}`),
+                        steps: [
+                            {
+                                title: "ステップ1：外のマイナスは待たせて、√ の中身を計算！",
+                                text: `√ の中の ${mMath(`(-${b})<sup>2</sup>`)} は、2乗するとプラスの <strong class="text-teal-700">${mMath(sq)}</strong> になるね。`,
+                                highlight: `式は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mMath(`-${mSqrt(sq)}`)}</span> になったよ！`
+                            },
+                            {
+                                title: "ステップ2：外のマイナスをくっつけて完成！",
+                                text: `${mSqrt(sq)} は ${mMath(b)} になり、一番前にあったマイナスがくっつくから、答えは <strong class="text-rose-600">${mMath(`-${b}`)}</strong> ！`,
+                                answerHtml: mMath(`-${b}`),
+                                point: "√ の中身のマイナスは消えるけど、√ の外のマイナスは残る！"
+                            }
+                        ],
+                        correctChoice: mMath(`-${b}`),
+                        choices: shuffleArray([mMath(`-${b}`), mMath(b), mMath(`&plusmn;${b}`), mMath(`-${sq}`)])
+                    };
+                }
+            } else if (catId === 3) {
+                // 大問3のランダム生成
+                const n = nonSquares[Math.floor(Math.random() * nonSquares.length)];
+                const isNeg = Math.random() < 0.6; // 引っかけの(2)タイプを少し多めに出題
+
+                if (!isNeg) {
+                    return {
+                        id: "3-rand",
+                        label: "ランダム類題",
+                        questionHtml: mMath(`(${mSqrt(n)})<sup>2</sup>`),
+                        steps: [
+                            {
+                                title: "ステップ1：√ を2乗するとルートが外れる！",
+                                text: `${mSqrt(n)} を2乗すると、そのまま根号（√）が外れるよ！`,
+                                highlight: `間違えて ${mMath(`${n} &times; ${n}`)} を計算しないようにしよう！`
+                            },
+                            {
+                                title: "ステップ2：そのまま数字を取り出して完成！",
+                                text: `答えはシンプルに <strong class="text-rose-600">${mMath(n)}</strong> だね！`,
+                                answerHtml: mMath(n),
+                                point: "(√a)² ＝ a ！ルートが外れるだけ！"
+                            }
+                        ],
+                        correctChoice: mMath(n),
+                        choices: shuffleArray([mMath(n), mMath(`-${n}`), mMath(n * n), mMath(`&plusmn;${n}`)])
+                    };
+                } else {
+                    return {
+                        id: "3-rand",
+                        label: "ランダム類題",
+                        questionHtml: mMath(`-( -${mSqrt(n)} )<sup>2</sup>`),
+                        steps: [
+                            {
+                                title: "ステップ1：まずはカッコの2乗 ( -√" + n + " )² を計算！",
+                                text: `カッコの中のマイナスは2乗するとプラスになり、√ も外れるから、カッコの部分は <strong class="text-teal-700">${mMath(n)}</strong> になるね！`,
+                                highlight: `まだ一番前のマイナスが残っているよ！`
+                            },
+                            {
+                                title: "ステップ2：一番前のマイナスをくっつけて完成！",
+                                text: `カッコの外で待っていたマイナスをくっつけて、答えは <strong class="text-rose-600">${mMath(`-${n}`)}</strong> ！`,
+                                answerHtml: mMath(`-${n}`),
+                                point: "-( -√a )² は、カッコの2乗がプラスの a になり、外のマイナスがついて -a になる！"
+                            }
+                        ],
+                        correctChoice: mMath(`-${n}`),
+                        choices: shuffleArray([mMath(`-${n}`), mMath(n), mMath(`-${n * n}`), mMath(n * n)])
+                    };
+                }
+            } else {
+                // 大問4のランダム生成
+                const type = Math.floor(Math.random() * 3) + 1;
+                if (type === 1) {
+                    // 整数とルートの比較
+                    const intVal = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+                    const intSq = intVal * intVal;
+                    const diff = Math.random() < 0.5 ? -1 : 1; // すぐ近くの非平方数を作る
+                    const radVal = intSq + (diff * (Math.floor(Math.random() * 3) + 1));
+                    const isIntBigger = intSq > radVal;
+                    const ansSymbol = isIntBigger ? "&gt;" : "&lt;";
+                    const wrongSymbol = isIntBigger ? "&lt;" : "&gt;";
+
+                    return {
+                        id: "4-rand",
+                        label: "ランダム類題",
+                        questionHtml: `${mMath(intVal)} , ${mSqrt(radVal)}`,
+                        steps: [
+                            {
+                                title: "ステップ1：整数の " + intVal + " を2乗して √ に入れよう！",
+                                text: `${mMath(`${intVal} &times; ${intVal} = ${intSq}`)} だから、整数の ${mMath(intVal)} は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt(intSq)}</span> に変身するね！`,
+                                highlight: `これで <strong class="text-teal-700">${mSqrt(intSq)}</strong> と <strong class="text-teal-700">${mSqrt(radVal)}</strong> の比較になったよ。`
+                            },
+                            {
+                                title: "ステップ2：中身を比べて、元の数で答えよう！",
+                                text: `${mMath(intSq)} と ${mMath(radVal)} を比べると、${mMath(isIntBigger ? intSq : radVal)} の方が大きいね！<br>最後は ${mSqrt(intSq)} を元の <strong class="text-rose-600">${mMath(intVal)}</strong> に戻して書こう。`,
+                                answerHtml: mMath(`${intVal} ${ansSymbol} ${mSqrt(radVal)}`),
+                                point: "整数は2乗してルートに入れる！答えるときは元の整数に戻す！"
+                            }
+                        ],
+                        correctChoice: mMath(`${intVal} ${ansSymbol} ${mSqrt(radVal)}`),
+                        choices: [
+                            mMath(`${intVal} ${ansSymbol} ${mSqrt(radVal)}`),
+                            mMath(`${intVal} ${wrongSymbol} ${mSqrt(radVal)}`),
+                            mMath(`${mSqrt(intSq)} ${ansSymbol} ${mSqrt(radVal)} （元の数に戻し忘れ）`)
+                        ]
+                    };
+                } else if (type === 2) {
+                    // マイナスの比較
+                    const a = nonSquares[Math.floor(Math.random() * 8)];
+                    const b = a + (Math.floor(Math.random() * 3) + 1);
+                    return {
+                        id: "4-rand",
+                        label: "ランダム類題",
+                        questionHtml: `${mMath(`-${mSqrt(a)}`)} , ${mMath(`-${mSqrt(b)}`)}`,
+                        steps: [
+                            {
+                                title: "ステップ1：両方ともマイナスがついているよ！",
+                                text: `数字の部分だけ見ると ${mMath(a)} より ${mMath(b)} の方が大きいけれど、両方とも <strong class="text-rose-600">マイナス</strong> がついているね！`,
+                                highlight: `マイナスの世界では、数字が小さい方が大きくなるよ！`
+                            },
+                            {
+                                title: "ステップ2：向きを逆転させて答えよう！",
+                                text: `だから、<strong class="text-rose-600">${mMath(`-${mSqrt(a)}`)}</strong> の方が大きい！不等号の向きに気をつけよう。`,
+                                answerHtml: mMath(`-${mSqrt(a)} &gt; -${mSqrt(b)}`),
+                                point: "マイナス同士の比較は、数字が小さい方が大きい！"
+                            }
+                        ],
+                        correctChoice: mMath(`-${mSqrt(a)} &gt; -${mSqrt(b)}`),
+                        choices: [
+                            mMath(`-${mSqrt(a)} &gt; -${mSqrt(b)}`),
+                            mMath(`-${mSqrt(a)} &lt; -${mSqrt(b)}`)
+                        ]
+                    };
+                } else {
+                    // 3つの数の比較
+                    const intVal = [3, 4, 5][Math.floor(Math.random() * 3)];
+                    const intSq = intVal * intVal;
+                    const r1 = intSq - 1;
+                    const r2 = intSq - 3;
+                    return {
+                        id: "4-rand",
+                        label: "ランダム類題",
+                        questionHtml: `${mSqrt(r1)} , ${mSqrt(r2)} , ${mMath(intVal)}`,
+                        steps: [
+                            {
+                                title: "ステップ1：整数の " + intVal + " を √ に変身させよう！",
+                                text: `${mMath(`${intVal} &times; ${intVal} = ${intSq}`)} だから、${mMath(intVal)} は <span class="bg-amber-100 px-2 py-0.5 rounded font-bold">${mSqrt(intSq)}</span> になるね！`,
+                                highlight: `3つの数は <strong class="text-teal-700">${mSqrt(r1)} , ${mSqrt(r2)} , ${mSqrt(intSq)}</strong> だね。`
+                            },
+                            {
+                                title: "ステップ2：小さい順に並べて、元の数に戻そう！",
+                                text: `小さい順に並べると ${mMath(`${mSqrt(r2)} &lt; ${mSqrt(r1)} &lt; ${mSqrt(intSq)}`)} になるね。<br>最後に ${mSqrt(intSq)} を元の <strong class="text-rose-600">${mMath(intVal)}</strong> に戻して完成！`,
+                                answerHtml: mMath(`${mSqrt(r2)} &lt; ${mSqrt(r1)} &lt; ${intVal}`),
+                                point: "3つの数はすべて √ に揃えてから、小さい順に並べ替えよう！"
+                            }
+                        ],
+                        correctChoice: mMath(`${mSqrt(r2)} &lt; ${mSqrt(r1)} &lt; ${intVal}`),
+                        choices: shuffleArray([
+                            mMath(`${mSqrt(r2)} &lt; ${mSqrt(r1)} &lt; ${intVal}`),
+                            mMath(`${intVal} &lt; ${mSqrt(r2)} &lt; ${mSqrt(r1)}`),
+                            mMath(`${mSqrt(r1)} &gt; ${mSqrt(r2)} &lt; ${intVal} （並び替え忘れ）`),
+                            mMath(`${mSqrt(r2)} &lt; ${mSqrt(r1)} &lt; ${mSqrt(intSq)} （元の数に戻し忘れ）`)
+                        ])
+                    };
+                }
+            }
+        }
+
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        // ==========================================
+        // アプリの状態管理
+        // ==========================================
+        let currentCategory = 1;
+        let currentProblemIndex = 0; // -1 の場合はランダム類題
+        let currentProblemObj = null;
+        let currentMode = 'guide'; // 'guide' または 'drill'
+        let currentStepIndex = 0;
+        let streakCount = 0;
+        let totalCleared = 0;
+        let drillAnswered = false;
+
+        // ==========================================
+        // 初期化と画面更新
+        // ==========================================
+        window.onload = function() {
+            selectCategory(1);
+        };
+
+        function selectCategory(catId) {
+            currentCategory = catId;
+            currentProblemIndex = 0;
+
+            // タブの見た目更新
+            for (let i = 1; i <= 4; i++) {
+                const tab = document.getElementById(`tab-${i}`);
+                if (i === catId) {
+                    tab.className = "category-tab flex-1 py-2 px-3 text-xs md:text-sm font-bold rounded-t-lg bg-white text-teal-800 shadow-sm whitespace-nowrap transition";
+                } else {
+                    tab.className = "category-tab flex-1 py-2 px-3 text-xs md:text-sm font-bold rounded-t-lg bg-teal-800/60 text-teal-100 hover:bg-teal-800 whitespace-nowrap transition";
+                }
+            }
+
+            loadProblem(0);
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            const btnGuide = document.getElementById('mode-guide');
+            const btnDrill = document.getElementById('mode-drill');
+            const guideContainer = document.getElementById('guide-container');
+            const drillContainer = document.getElementById('drill-container');
+
+            if (mode === 'guide') {
+                btnGuide.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-1.5 bg-amber-400 text-slate-900 shadow-sm";
+                btnDrill.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                guideContainer.classList.remove('hidden');
+                guideContainer.classList.add('flex');
+                drillContainer.classList.add('hidden');
+                drillContainer.classList.remove('flex');
+                renderGuideMode();
+            } else {
+                btnDrill.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-1.5 bg-teal-600 text-white shadow-sm";
+                btnGuide.className = "flex-1 sm:flex-initial px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                drillContainer.classList.remove('hidden');
+                drillContainer.classList.add('flex');
+                guideContainer.classList.add('hidden');
+                guideContainer.classList.remove('flex');
+                renderDrillMode();
+            }
+        }
+
+        function loadProblem(index) {
+            currentProblemIndex = index;
+            const catData = testCategories[currentCategory];
+
+            if (index === -1) {
+                currentProblemObj = generateRandomProblem(currentCategory);
+            } else {
+                currentProblemObj = catData.problems[index];
+            }
+
+            // ヘッダー・問題文の更新
+            document.getElementById('problem-instruction').textContent = catData.title;
+            document.getElementById('problem-badge').textContent = currentProblemObj.label;
+            document.getElementById('problem-question').innerHTML = currentProblemObj.questionHtml;
+
+            // 小問ボタンの描画
+            renderSubproblemButtons();
+
+            // 現在のモードに合わせて描画
+            if (currentMode === 'guide') {
+                renderGuideMode();
+            } else {
+                renderDrillMode();
+            }
+        }
+
+        function renderSubproblemButtons() {
+            const container = document.getElementById('subproblem-buttons');
+            const problems = testCategories[currentCategory].problems;
+            let html = '';
+
+            problems.forEach((p, idx) => {
+                const active = (currentProblemIndex === idx);
+                const btnClass = active 
+                    ? "bg-teal-600 text-white font-extrabold shadow-sm" 
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold";
+                html += `<button onclick="loadProblem(${idx})" class="px-3 py-1.5 rounded-lg text-xs md:text-sm transition ${btnClass}">(${idx + 1})</button>`;
+            });
+
+            // ランダム類題ボタン
+            const randActive = (currentProblemIndex === -1);
+            const randClass = randActive
+                ? "bg-amber-500 text-white font-extrabold shadow-sm"
+                : "bg-amber-100 text-amber-900 hover:bg-amber-200 font-bold border border-amber-300";
+            html += `<button onclick="loadProblem(-1)" class="px-3 py-1.5 rounded-lg text-xs md:text-sm transition flex items-center gap-1 ${randClass}">
+                        <i class="fa-solid fa-shuffle"></i><span>類題</span>
+                     </button>`;
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // 1. ステップ解説モードのロジック
+        // ==========================================
+        function renderGuideMode() {
+            currentStepIndex = 0;
+            document.getElementById('steps-list').innerHTML = '';
+            document.getElementById('next-step-area').classList.remove('hidden');
+            document.getElementById('guide-complete-actions').classList.add('hidden');
+            updateNextStepButtonText();
+        }
+
+        function updateNextStepButtonText() {
+            const totalSteps = currentProblemObj.steps.length;
+            const btnText = document.getElementById('next-step-btn-text');
+            if (currentStepIndex === 0) {
+                btnText.textContent = `タップして考え方をスタート！ (1/${totalSteps})`;
+            } else if (currentStepIndex < totalSteps - 1) {
+                btnText.textContent = `タップして次のステップへ (${currentStepIndex + 1}/${totalSteps})`;
+            } else {
+                btnText.textContent = `タップして最終的な答えを確認！ (${totalSteps}/${totalSteps})`;
+            }
+        }
+
+        function advanceStep() {
+            const steps = currentProblemObj.steps;
+            if (currentStepIndex >= steps.length) return;
+
+            const stepData = steps[currentStepIndex];
+            const stepsList = document.getElementById('steps-list');
+
+            const isLastStep = (currentStepIndex === steps.length - 1);
+
+            const stepEl = document.createElement('div');
+            if (!isLastStep) {
+                stepEl.className = "step-card bg-white p-4 md:p-5 rounded-2xl shadow-sm border-l-8 border-teal-500 flex flex-col gap-2";
+                stepEl.innerHTML = `
+                    <div class="flex items-center space-x-2 text-teal-800 font-extrabold text-sm md:text-base">
+                        <span class="bg-teal-100 text-teal-800 px-2.5 py-0.5 rounded-full text-xs">思考</span>
+                        <span>${stepData.title}</span>
+                    </div>
+                    <div class="text-slate-700 text-sm md:text-base leading-relaxed pl-1">
+                        ${stepData.text}
+                    </div>
+                    ${stepData.highlight ? `<div class="mt-1 p-3 bg-slate-50 rounded-xl text-slate-800 text-sm md:text-base border border-slate-200">${stepData.highlight}</div>` : ''}
+                `;
+            } else {
+                // 最終ステップ（答えの表示）
+                stepEl.className = "step-card bg-white p-5 rounded-2xl shadow-md border-4 border-amber-400 flex flex-col gap-3";
+                stepEl.innerHTML = `
+                    <div class="flex items-center space-x-2 text-amber-800 font-extrabold text-sm md:text-base">
+                        <i class="fa-solid fa-crown text-amber-500 text-lg"></i>
+                        <span>${stepData.title}</span>
+                    </div>
+                    <div class="text-slate-700 text-sm md:text-base leading-relaxed">
+                        ${stepData.text}
+                    </div>
+                    <div class="my-1 py-4 px-6 bg-amber-50 rounded-xl border border-amber-200 text-center">
+                        <div class="text-xs font-bold text-amber-700 mb-1">【 答え 】</div>
+                        <div class="text-3xl md:text-4xl font-extrabold text-rose-600">${stepData.answerHtml}</div>
+                    </div>
+                    <div class="bg-teal-50 p-3 rounded-xl border border-teal-200 flex items-start space-x-2.5 text-xs md:text-sm text-teal-900 font-bold">
+                        <i class="fa-solid fa-thumbtack text-teal-600 mt-0.5"></i>
+                        <span>${stepData.point}</span>
+                    </div>
+                `;
+            }
+
+            stepsList.appendChild(stepEl);
+            currentStepIndex++;
+
+            // 自動スクロールで新しいステップを見やすくする
+            setTimeout(() => {
+                stepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+
+            if (currentStepIndex < steps.length) {
+                updateNextStepButtonText();
+            } else {
+                // 全ステップ表示完了
+                document.getElementById('next-step-area').classList.add('hidden');
+                document.getElementById('guide-complete-actions').classList.remove('hidden');
+            }
+        }
+
+        function tryRandomInDrill() {
+            currentMode = 'drill';
+            loadProblem(-1);
+            setMode('drill');
+        }
+
+        function nextProblemInGuide() {
+            const problems = testCategories[currentCategory].problems;
+            if (currentProblemIndex >= 0 && currentProblemIndex < problems.length - 1) {
+                loadProblem(currentProblemIndex + 1);
+            } else if (currentCategory < 4) {
+                selectCategory(currentCategory + 1);
+            } else {
+                loadProblem(-1);
+            }
+        }
+
+        // ==========================================
+        // 2. 自力で練習モードのロジック
+        // ==========================================
+        function renderDrillMode() {
+            drillAnswered = false;
+            const feedbackEl = document.getElementById('drill-feedback');
+            feedbackEl.classList.add('hidden');
+            feedbackEl.innerHTML = '';
+
+            const choicesGrid = document.getElementById('choices-grid');
+            choicesGrid.innerHTML = '';
+
+            const shuffledChoices = shuffleArray(currentProblemObj.choices);
+
+            shuffledChoices.forEach((choiceHtml) => {
+                const btn = document.createElement('button');
+                btn.className = "choice-btn bg-white hover:bg-teal-50 text-slate-800 font-extrabold text-xl md:text-2xl py-4 px-5 rounded-2xl border-2 border-slate-300 btn-3d-gray flex items-center justify-center min-h-[72px]";
+                btn.innerHTML = choiceHtml;
+                btn.onclick = () => checkDrillAnswer(btn, choiceHtml);
+                choicesGrid.appendChild(btn);
+            });
+        }
+
+        function checkDrillAnswer(clickedBtn, selectedHtml) {
+            if (drillAnswered) return;
+            drillAnswered = true;
+
+            const isCorrect = (selectedHtml === currentProblemObj.correctChoice);
+            const allBtns = document.querySelectorAll('.choice-btn');
+
+            allBtns.forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerHTML === currentProblemObj.correctChoice) {
+                    btn.className = "choice-btn bg-emerald-500 text-white font-extrabold text-xl md:text-2xl py-4 px-5 rounded-2xl border-2 border-emerald-600 flex items-center justify-center min-h-[72px] shadow-md";
+                } else if (btn === clickedBtn && !isCorrect) {
+                    btn.className = "choice-btn bg-rose-500 text-white font-extrabold text-xl md:text-2xl py-4 px-5 rounded-2xl border-2 border-rose-600 flex items-center justify-center min-h-[72px] opacity-90";
+                } else {
+                    btn.className = "choice-btn bg-slate-100 text-slate-400 font-extrabold text-xl md:text-2xl py-4 px-5 rounded-2xl border-2 border-slate-200 flex items-center justify-center min-h-[72px] opacity-50";
+                }
+            });
+
+            // スコア更新
+            if (isCorrect) {
+                streakCount++;
+                totalCleared++;
+            } else {
+                streakCount = 0;
+            }
+            document.getElementById('streak-count').textContent = streakCount;
+            document.getElementById('total-cleared').textContent = totalCleared;
+
+            // 思考プロセスの振り返り（全ステップをコンパクトに表示）
+            const stepsSummaryHtml = currentProblemObj.steps.map((s, i) => `
+                <div class="text-xs md:text-sm bg-white p-2.5 rounded-xl border border-slate-200">
+                    <div class="font-bold text-teal-800 mb-0.5">● ${s.title}</div>
+                    <div class="text-slate-600">${s.text}</div>
+                </div>
+            `).join('');
+
+            const lastStep = currentProblemObj.steps[currentProblemObj.steps.length - 1];
+
+            const feedbackEl = document.getElementById('drill-feedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (isCorrect) {
+                feedbackEl.className = "rounded-2xl p-5 border-4 border-emerald-400 bg-emerald-50 step-card flex flex-col gap-3";
+                feedbackEl.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <i class="fa-solid fa-circle-check text-3xl text-emerald-500"></i>
+                            <div>
+                                <div class="text-lg md:text-xl font-extrabold text-emerald-900">大正解！バッチリだね！</div>
+                                <div class="text-xs text-emerald-700 font-bold">${lastStep.point}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2 mt-2">
+                        <button onclick="loadProblem(-1)" class="flex-1 py-3 px-4 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold rounded-xl btn-3d-amber flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shuffle"></i>
+                            <span>もう1問！ランダム類題に挑戦</span>
+                        </button>
+                        <button onclick="nextDrillProblem()" class="flex-1 py-3 px-4 bg-teal-600 hover:bg-teal-500 text-white font-extrabold rounded-xl btn-3d flex items-center justify-center gap-2">
+                            <span>プリントの次の問題へ</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                feedbackEl.className = "rounded-2xl p-5 border-4 border-rose-400 bg-rose-50 step-card flex flex-col gap-3";
+                feedbackEl.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl text-rose-500"></i>
+                        <div>
+                            <div class="text-lg font-extrabold text-rose-900">おしい！ここで考え方を確認しよう！</div>
+                            <div class="text-xs text-rose-700 font-bold">正しい答え： <span class="text-base bg-white px-2 py-0.5 rounded border border-rose-300">${lastStep.answerHtml}</span></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5 mt-1">
+                        ${stepsSummaryHtml}
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2 mt-2">
+                        <button onclick="renderDrillMode()" class="flex-1 py-3 px-4 bg-rose-600 hover:bg-rose-500 text-white font-extrabold rounded-xl shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>同じ問題をもう1回解き直す</span>
+                        </button>
+                        <button onclick="loadProblem(-1)" class="flex-1 py-3 px-4 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold rounded-xl btn-3d-amber flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shuffle"></i>
+                            <span>似た問題（類題）でリベンジ！</span>
+                        </button>
+                    </div>
+                `;
+            }
+
+            setTimeout(() => {
+                feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        }
+
+        function switchToGuideForCurrent() {
+            setMode('guide');
+        }
+
+        function nextDrillProblem() {
+            const problems = testCategories[currentCategory].problems;
+            if (currentProblemIndex >= 0 && currentProblemIndex < problems.length - 1) {
+                loadProblem(currentProblemIndex + 1);
+            } else if (currentCategory < 4) {
+                selectCategory(currentCategory + 1);
+            } else {
+                loadProblem(-1);
+            }
+        }
+    </script>
+</body>
+</html>
